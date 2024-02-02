@@ -13,12 +13,31 @@ struct ThemeChangeView: View {
     @AppStorage("userTheme") var userTheme: Theme = .systemDefault
     // For Sliding Effect
     @Namespace var animation
+    // For Moon Effect
+    @State private var circleOffset: CGSize = .zero
+    
+    // Custom INIT
+    // This is for moon effect also but when first intialized
+    // We were alreading sending scheme in default init, but in custom we check for dark mode and then set offset for circle
+    init(scheme: ColorScheme) {
+        self.scheme = scheme
+        let isDark = scheme == .dark
+        self._circleOffset = .init(initialValue: CGSize(width: isDark ? 30 : 150, height: isDark ? -25 : 150))
+    }
     
     var body: some View {
         VStack(spacing: 15.0) {
             Circle()
                 .fill(userTheme.color(scheme).gradient)
                 .frame(width: 150.0, height: 150.0)
+                .mask {
+                    Rectangle()
+                        .overlay {
+                            Circle()
+                                .offset(circleOffset)
+                                .blendMode(.destinationOut)
+                        }
+                }
             
             Text("Choose a style.")
                 .font(.title2.bold())
@@ -36,7 +55,7 @@ struct ThemeChangeView: View {
                             ZStack {
                                 if theme == userTheme {
                                     Capsule()
-                                        .fill(.white)
+                                        .fill(Color(.BG))
                                         .matchedGeometryEffect(id: "ActiveTab", in: animation)
                                 }
                             }
@@ -54,15 +73,21 @@ struct ThemeChangeView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .frame(height: 410.0)
-        .background(.white)
+        .background(Color(.BG))
         .clipShape(.rect(cornerRadius: 30.0))
         .padding(.horizontal, 15.0)
         .environment(\.colorScheme, scheme)
+        .onChange(of: scheme) { _, newValue in
+            let isDark = newValue == .dark
+            withAnimation(.bouncy) {
+                circleOffset = CGSize(width: isDark ? 30 : 150, height: isDark ? -25 : 150)
+            }
+        }
     }
 }
 
 #Preview {
-    ContentView()
+    ThemeChangeView(scheme: .light)
 }
 
 enum Theme: String, CaseIterable {
