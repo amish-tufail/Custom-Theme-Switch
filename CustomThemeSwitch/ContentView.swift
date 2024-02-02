@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var changeTheme: Bool = false
+    @Environment(\.colorScheme) var scheme
+    @AppStorage("userTheme") var userTheme: Theme = .systemDefault
     
     var body: some View {
         NavigationStack {
@@ -22,9 +24,10 @@ struct ContentView: View {
                 }
                 
             }
+            .preferredColorScheme(userTheme.colorScheme)
             .navigationTitle("Settings 🎯")
             .sheet(isPresented: $changeTheme, content: {
-                ThemeChangeView()
+                ThemeChangeView(scheme: scheme)
                     .presentationDetents([.height(410.0)])
                     .presentationBackground(.clear)
             })

@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ThemeChangeView: View {
-    @Environment(\.colorScheme) var scheme
+//    @Environment(\.colorScheme) var scheme // This was causing an issue that this view sheet was not changing theme
+    var scheme: ColorScheme // So, created this and passing from other view
     @AppStorage("userTheme") var userTheme: Theme = .systemDefault
     // For Sliding Effect
     @Namespace var animation
@@ -56,12 +57,12 @@ struct ThemeChangeView: View {
         .background(.white)
         .clipShape(.rect(cornerRadius: 30.0))
         .padding(.horizontal, 15.0)
-        
+        .environment(\.colorScheme, scheme)
     }
 }
 
 #Preview {
-    ThemeChangeView()
+    ContentView()
 }
 
 enum Theme: String, CaseIterable {
@@ -70,13 +71,24 @@ enum Theme: String, CaseIterable {
     case dark = "Dark"
     
     func color(_ scheme: ColorScheme) -> Color {
-        switch self { // self == scheme
+        switch self {
         case .systemDefault:
             scheme == .dark ? Color.indigo : Color.orange
         case .light:
             Color.orange
         case .dark:
             Color.purple
+        }
+    }
+    
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .systemDefault:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
         }
     }
 }
