@@ -8,14 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var changeTheme: Bool = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                Section("Appearance") {
+                    Button {
+                        changeTheme.toggle()
+                    } label: {
+                        Text("Change Theme")
+                    }
+                }
+                
+            }
+            .navigationTitle("Settings 🎯")
+            .sheet(isPresented: $changeTheme, content: {
+                ThemeChangeView()
+                    .presentationDetents([.height(410.0)])
+                    .presentationBackground(.clear)
+            })
         }
-        .padding()
     }
 }
 
