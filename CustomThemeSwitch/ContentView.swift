@@ -30,6 +30,7 @@ struct ContentView: View {
                 ThemeChangeView(scheme: scheme)
                     .presentationDetents([.height(410.0)])
                     .presentationBackground(.clear)
+                    .shadow(color: .orange.opacity(0.5), radius: 100, y: 330)
             })
         }
     }

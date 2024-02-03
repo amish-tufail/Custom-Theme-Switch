@@ -102,7 +102,7 @@ enum Theme: String, CaseIterable {
         case .light:
             Color.orange
         case .dark:
-            Color.purple
+            Color.indigo
         }
     }
     
